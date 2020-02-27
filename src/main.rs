@@ -1,15 +1,18 @@
 use structopt::StructOpt;
 
-#[derive(StructOpt,Debug)]
+#[derive(StructOpt)]
 enum Cli {
-    Decode {
-        filename: std::path::PathBuf,
-    },
+    Decode(Decode),
+}
+
+#[derive(StructOpt)]
+struct Decode {
+    filename: std::path::PathBuf,
 }
 
 fn main() {
     let args = Cli::from_args();
     match args {
-        Cli::Decode { filename } => { println!("decode filename: {:?}", filename); }
+        Cli::Decode(decode) => { println!("decode filename: {:?}", decode.filename); }
     }
 }
