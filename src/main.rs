@@ -14,5 +14,5 @@ fn main() {
 }
 
 fn decode(filename: PathBuf) {
-    println!("decode filename: {}", filename.to_str().unwrap());
+    println!("decode filename: {}", filename.display());
 }
