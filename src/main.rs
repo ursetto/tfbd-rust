@@ -12,16 +12,19 @@ enum Cli {
 fn main() {
     let args = Cli::from_args();
     match args {
-        Cli::Decode { filename } => { decode(filename).unwrap(); }
+        Cli::Decode { filename } => { decode_file(filename).unwrap(); }
     }
 }
 
-// TODO: decode should take a writer and have decode_file do the
-// file open, for easier testing and composability.
-fn decode(filename: PathBuf) -> io::Result<()> {
+fn decode_file(filename: PathBuf) -> io::Result<()> {
     let f = File::open(&filename)?;
-    let mut r = io::BufReader::new(f);
+    let r = io::BufReader::new(f);
     println!("Decoding filename: {}", filename.display());
+    decode(r)?;
+    Ok(())
+}
+
+fn decode(mut r: impl io::Read) -> io::Result<()> {
     let record_count = r.read_u16::<LE>()?;
     println!("# TFBD ({} records total)", record_count);
     decode_2x(r)?;
