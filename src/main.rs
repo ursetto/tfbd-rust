@@ -1,7 +1,6 @@
 use structopt::StructOpt;
 use std::path::PathBuf;
 use std::io;
-use std::io::prelude::*; // Read
 use std::fs::File;
 use byteorder::{LE, ReadBytesExt};
 
@@ -29,8 +28,8 @@ fn decode(filename: PathBuf) -> io::Result<()> {
 }
 
 // TODO: Should take a Read trait.
-fn decode_2x(mut f: std::fs::File) -> io::Result<()> {
-    let section_count = f.read_u16::<LE>()?;
+fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
+    let section_count = r.read_u16::<LE>()?;
     println!("# 2x section ({} records)", section_count);
     Ok(())
 }
