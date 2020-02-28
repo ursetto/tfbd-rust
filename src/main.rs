@@ -39,6 +39,7 @@ fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
         let var_len = r.read_u8()?;
         let offset = r.read_u32::<LE>()?;
         let area_len = r.read_u16::<LE>()?;
+        assert_eq!(var_len, 0, "2x section var_len must be 0");
         println!("rtype {:02x} var_len {:02x} offset {:08x} area_len {:04x}",
                  rtype, var_len, offset, area_len);
     }
