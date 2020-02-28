@@ -31,5 +31,13 @@ fn decode(filename: PathBuf) -> io::Result<()> {
 fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 2x section ({} records)", section_count);
+    for _ in 0..section_count {
+        let rtype = r.read_u8()?;
+        let var_len = r.read_u8()?;
+        let offset = r.read_u32::<LE>()?;
+        let area_len = r.read_u16::<LE>()?;
+        println!("rtype {:02x} var_len {:02x} offset {:08x} area_len {:04x}",
+                 rtype, var_len, offset, area_len);
+    }
     Ok(())
 }
