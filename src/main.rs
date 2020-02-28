@@ -19,15 +19,15 @@ fn main() {
 // TODO: decode should take a writer and have decode_file do the
 // file open, for easier testing and composability.
 fn decode(filename: PathBuf) -> io::Result<()> {
-    let mut f = File::open(&filename)?;
-    println!("decode filename: {}", filename.display());
-    let record_count = f.read_u16::<LE>()?;
+    let f = File::open(&filename)?;
+    let mut r = io::BufReader::new(f);
+    println!("Decoding filename: {}", filename.display());
+    let record_count = r.read_u16::<LE>()?;
     println!("# TFBD ({} records total)", record_count);
-    decode_2x(f)?;
+    decode_2x(r)?;
     Ok(())
 }
 
-// TODO: Should take a Read trait.
 fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 2x section ({} records)", section_count);
