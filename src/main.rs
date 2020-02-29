@@ -71,14 +71,19 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
 
         let mut var_data = vec![0; var_len as usize];
         r.read_exact(&mut var_data)?;
-        let var_data: Vec<u8> = var_data.iter().map(|x| x & 0x7f).collect();
-        // Because we strip bit 7, str::from_utf8_unchecked would also work.
-        let var_str = std::str::from_utf8(&var_data)
-            .expect("invalid utf8 in pascal string");
+        let var_str = apple_to_ascii(&var_data);
+
         match rtype {
             _ => println!("rtype {:02X} var_len {:02X} address {:08X} count {:04X} {}",
                           rtype, var_len, address, count, var_str),
         }
     }
     Ok(())
+}
+
+fn apple_to_ascii(data: &[u8]) -> String {
+    let ascii_data: Vec<u8> = data.iter().map(|x| x & 0x7f).collect();
+    // Because we strip bit 7, str::from_utf8_unchecked would also work.
+    String::from_utf8(ascii_data)
+        .expect("invalid utf8 in pascal string")
 }
