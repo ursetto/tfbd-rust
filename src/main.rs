@@ -74,6 +74,12 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
         let var_str = apple_to_ascii(&var_data);
 
         match rtype {
+            0x40 => println!("LAB +${:04X}, {}         # {:04X}",
+                             address, var_str, count),
+            0x44 => {
+                assert_eq!(count, 1);
+                println!("EQU  ${:04X}, {}", address, var_str);
+            },
             _ => println!("rtype {:02X} var_len {:02X} address {:08X} count {:04X} {}",
                           rtype, var_len, address, count, var_str),
         }
