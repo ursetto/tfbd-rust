@@ -29,6 +29,7 @@ fn decode(mut r: impl io::Read) -> io::Result<()> {
     println!("# TFBD ({} records total)", record_count);
     decode_2x(&mut r)?;
     decode_4x(&mut r)?;
+    decode_6x(&mut r)?;
     Ok(())
 }
 
@@ -37,10 +38,10 @@ fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
     println!("# 2x section ({} records)", section_count);
     for _ in 0..section_count {
         let rtype = r.read_u8()?;
+        assert!(rtype & 0xf0 == 0x20, "expected 2x section, got {:02X}", rtype);
         let var_len = r.read_u8()?;
         let offset = r.read_u32::<LE>()?;
         let area_len = r.read_u16::<LE>()?;
-        assert!(rtype & 0xf0 == 0x20, "expected 2x section, got {:02X}", rtype);
         assert_eq!(var_len, 0, "2x section var_len must be 0");
         match rtype {
             // An enum would work but how useful is not clear.
@@ -63,12 +64,12 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
     for _ in 0..section_count {
         let rtype   = r.read_u8()?;
         assert!(rtype & 0xf0 == 0x40, "expected 4x section, got {:02X}", rtype);
-
         let var_len = r.read_u8()?;
         let address = r.read_u32::<LE>()?;
         let count   = r.read_u16::<LE>()?;
-        assert!(var_len == r.read_u8()?);   // pascal string
 
+        assert_ne!(var_len, 0); // all types require a p-string
+        assert_eq!(var_len, r.read_u8()?);   // pascal string
         let mut var_data = vec![0; var_len as usize];
         r.read_exact(&mut var_data)?;
         let var_str = apple_to_ascii(&var_data);
@@ -82,6 +83,53 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
             },
             _ => println!("rtype {:02X} var_len {:02X} address {:08X} count {:04X} {}",
                           rtype, var_len, address, count, var_str),
+        }
+    }
+    Ok(())
+}
+
+fn decode_6x(mut r: impl io::Read) -> io::Result<()> {
+    let section_count = r.read_u16::<LE>()?;
+    println!("# 6x section ({} records)", section_count);
+    for _ in 0..section_count {
+        let rtype   = r.read_u8()?;
+        assert!(rtype & 0xf0 == 0x60, "expected 6x section, got {:02X}", rtype);
+        let var_len = r.read_u8()?;
+        let offset  = r.read_u32::<LE>()?;
+        let count   = r.read_u32::<LE>()?;
+        let arg     = r.read_u32::<LE>()?;
+
+        // FIXME: abstract this read of pascal string
+        // Note: this could be an Option<String> for better type-checking for
+        // types without a string. An empty string is really a p-string
+        // with a 0 length byte, whereas a missing p-string is not present.
+        let var_str =
+            if var_len != 0 {
+                assert!(var_len == r.read_u8()?);
+                let mut var_data = vec![0; var_len as usize];
+                r.read_exact(&mut var_data)?;
+                apple_to_ascii(&var_data)
+            } else {
+                "".to_string()
+            };
+
+        match rtype {
+            0x60 => {
+                assert_eq!(var_len, 0);
+                println!("ORG +${:04X}, ${:04X}, L${:04X}",
+                         offset, arg, count);
+            },
+            0x61 => {
+                assert_eq!(count, 1);
+                assert_eq!(var_len, 0);
+                println!("MX  +${:04X}, %{:02X}", offset, arg);
+            },
+            0x66 => {
+                assert_eq!(count, 1);
+                println!("COM +${:04X}, {}", offset, var_str);
+            },
+            _ => println!("{:02X} {:02X} {:08X} {:08X} {:08X} {}",
+                          rtype, var_len, offset, count, arg, var_str),
         }
     }
     Ok(())
