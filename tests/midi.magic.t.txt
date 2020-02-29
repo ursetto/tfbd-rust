@@ -1,0 +1,331 @@
+# TFBD (327 records total)
+# 2x section (60 records)
+ASC +$0044, $01
+ASC +$0045, $14
+ASC +$0062, $0C
+ASC +$008F, $27
+ASC +$00B6, $27
+ASC +$00DD, $1F
+ASC +$0672, $27
+ASC +$0699, $27
+ASC +$06C0, $27
+ASC +$06E7, $27
+ASC +$070E, $27
+ASC +$0735, $27
+ASC +$075C, $27
+ASC +$0783, $27
+ASC +$07AA, $27
+ASC +$07D1, $27
+ASC +$07F8, $27
+ASC +$081F, $27
+ASC +$0846, $14
+ASC +$08AD, $09
+ASC +$08B6, $01
+ASC +$08B7, $0A
+ASC +$08C1, $09
+ASC +$08CA, $03
+ASC +$08CD, $07
+ASC +$08D4, $03
+ASC +$0390, $27
+ASC +$03B7, $1D
+ASC +$03FC, $06
+ASC +$0411, $06
+ASC +$0428, $27
+ASC +$044F, $27
+ASC +$0476, $15
+HEX +$048B, $03
+ASC +$04BB, $27
+ASC +$04E2, $27
+ASC +$0509, $27
+ASC +$0530, $27
+ASC +$0557, $27
+ASC +$057E, $27
+ASC +$05A5, $27
+ASC +$05CC, $0E
+ASC +$05F7, $1A
+ASC +$0160, $0C
+DA  +$0148, $18
+ASC +$0BD6, $03
+ASC +$0BB9, $18
+ASC +$0BE4, $03
+DB  +$0A36, $C0
+DB  +$0AF6, $C0
+DB  +$0913, $01
+DW  +$0964, $0E
+DW  +$0972, $0E
+DB  +$0980, $54
+DB  +$09D4, $54
+DB  +$0A28, $0E
+DS  +$0CAC, $20
+DS  +$0CCC, $100
+DS  +$0BFC, $B0
+DS  +$0DCC, $34
+# 4x section (95 records)
+LAB +$085D, OUTSTR         # 0001
+LAB +$002C, START         # 0002
+LAB +$0160, CHOICES         # 000C
+LAB +$0148, RTSTBL         # 0002
+EQU  $C0A8, SSC_TDREG
+EQU  $C0AA, SSC_COMMAND
+EQU  $C0AB, SSC_CONTROL
+EQU  $C0A9, SSC_STATUS
+EQU  $0000, SONGPTR
+EQU  $4038, TEMPO
+LAB +$0224, :ADD20         # 0002
+LAB +$021C, CURSONGIDX         # 0002
+LAB +$0CCC, FILETBL         # 0100
+LAB +$0BF6, INITCAT         # 0002
+LAB +$0031, :ZEROTABLES         # 0002
+LAB +$08AD, :STRS         # 0009
+LAB +$089B, BLOADCMD         # 0003
+LAB +$048F, PRFILNAM         # 0003
+EQU  $0009, FILENAME
+LAB +$04A5, :x32         # 0002
+LAB +$049D, LOADFILE         # 0002
+LAB +$04AA, :x32END         # 0001
+LAB +$0080, TXTTITLE         # 0003
+LAB +$0073, :WAIT         # 0003
+LAB +$0338, SUMDELAY         # 0001
+LAB +$033A, :inner         # 0002
+LAB +$0339, :outer         # 0001
+LAB +$0374, :WAITKEY         # 0003
+LAB +$03DB, PRINTDISK         # 0003
+LAB +$049C, :end         # 0001
+EQU  $030A, SONGCNT
+LAB +$0422, MENU         # 0003
+LAB +$0616, ABC         # 0001
+LAB +$0134, :FOUND         # 0001
+LAB +$012A, :NEXT         # 0003
+LAB +$0118, SELECT         # 0003
+LAB +$0135, PLAYSEL         # 0001
+LAB +$00FF, MAINLOOP         # 0002
+EQU  $0303, CURSONG
+LAB +$0371, GETKEY         # 0003
+LAB +$05EC, PRESSANYKEY         # 0002
+LAB +$0229, :DONE         # 0001
+LAB +$0384, MAINMENU         # 0003
+LAB +$03F3, PRINTSONG         # 0001
+LAB +$0617, NEXTSONGP         # 0003
+LAB +$061F, NEXTSONG         # 0003
+EQU  $03EA, RECONNECTIO
+EQU  $000B, ISPLAYING
+LAB +$0CAC, DISKNAME         # 0020
+LAB +$02B5, ANIMATE         # 0003
+LAB +$032D, NEXTSONGBYTE         # 0002
+LAB +$0248, :next         # 0002
+LAB +$024F, :nokey         # 0003
+LAB +$01DF, DECTEMPO         # 0003
+LAB +$01D9, :ret         # 0002
+LAB +$01EC, :ret         # 0002
+EQU  $0305, LASTKEY
+LAB +$01F2, UPDATETEMPO         # 0003
+LAB +$01CC, INCTEMPO         # 0003
+LAB +$01C6, ]1         # 0002
+LAB +$0A36, HGRLO         # 00C0
+LAB +$0AF6, HGRHI         # 00C0
+LAB +$01B5, CLRLINE         # 0003
+LAB +$01AA, CLRBOTTOM         # 0002
+LAB +$0640, :plot         # 0002
+LAB +$0649, :scroll         # 0003
+LAB +$0925, SCROLLROLL         # 0002
+LAB +$022B, PLAY         # 0003
+LAB +$0236, PLAY2         # 0003
+LAB +$016C, SETUP         # 0001
+LAB +$017D, SETUP2         # 0002
+LAB +$08D7, DRAWNOTE         # 0001
+LAB +$08E2, DRAWROLL         # 0001
+LAB +$0924, DRAWEND         # 0001
+LAB +$0914, :on         # 0003
+LAB +$0954, :1         # 0002
+LAB +$0939, :2         # 0002
+LAB +$062B, CLEARROLL         # 0002
+LAB +$0964, PIXMASKOFF         # 0002
+LAB +$0972, PIXMASKON         # 0002
+LAB +$0980, MASKIDX         # 0001
+LAB +$09D4, XINDEX         # 0001
+LAB +$0A28, UNUSEDX         # 0001
+LAB +$0352, :continue         # 0003
+LAB +$035F, :loop         # 0002
+LAB +$02E8, SEND         # 0001
+LAB +$035D, ALLOFF         # 0002
+LAB +$02EF, SEND2         # 0002
+EQU  $0307, NOTENUM
+EQU  $0308, NOTEVEL
+LAB +$0282, NOTEMSG         # 0001
+LAB +$0299, :off         # 0002
+LAB +$02AA, :draw         # 0002
+LAB +$02DD, ENDMSG         # 0002
+LAB +$0BFC, BADSECT         # 00B0
+# 6x section (172 records)
+ORG +$0000, $0800, L$0E00
+MX  +$0000, %11
+MX  +$0805, %11
+MX  +$0859, %11
+COM +$0191, 115200 8M1 (?)
+COM +$0198, SONGPTR
+COM +$021C, Y=$303*32
+COM +$0BFC, BAD SECTORS TO END
+COM +$0CCC, 8x 32 byte entries
+COM +$0033, OVERLAP
+COM +$0CAC, 14AC-15CC ZEROED AT STARTUP
+COM +$0076, keypress ends logo
+COM +$0338, loop x+(x-1)+...+1 times
+COM +$0374, WAIT FOR KEYPRESS
+COM +$0409, int->digit
+COM +$0137, get corresponding
+COM +$013A, addr in RTSTBL
+COM +$013F, push addr on stack
+COM +$0147, jump to selection
+COM +$012A, find index of char
+COM +$012D, in CHOICES array
+COM +$0132, nope
+COM +$011E, A=user's selection
+COM +$00FF, ISPLAYING
+COM +$04AD, LOADING: 
+COM +$05E6, ",A$4000"
+COM +$05DA, "NOMONIOC:BLOAD ^"
+COM +$05E1, FILENAME
+COM +$04AB, IDX INTO FILETBL
+COM +$04AA, CURSONG*32
+COM +$022E, filename byte 0
+COM +$0231, lower 7 bits
+COM +$0233, are the tempo
+COM +$0012,  CONNECT DOS KBD/SCRN INTERCEPT
+COM +$0110, ISPLAYING
+COM +$0174, FILL 750-777 W/$AE
+COM +$0177, FILL 7D0-7F7 W/$AE
+COM +$02D5, 23RD TEXT LINE
+COM +$02DA, 24TH TEXT LINE
+COM +$02C2, '.'
+COM +$02D0, '*'
+COM +$023E, save last keypress?
+COM +$032D, A=($00++)
+COM +$032F, Read next song byte
+COM +$0331, and inc songptr
+COM +$0241, right arrow key
+COM +$0248, left arrow key
+COM +$01E2, min tempo 32
+COM +$01CF, max tempo 159
+COM +$01C2, 40 bytes / HGR line
+COM +$0A36, looks like an HGR
+COM +$0A38, address index table
+COM +$01B5, Y=hgr line # to clr
+COM +$01AA, clr last 2 HGR lines
+COM +$063E, white
+COM +$062B, HPLOT 70,49 TO
+COM +$062D, 195,49
+COM +$063C, 18*7=126 pixels
+COM +$0631, 10*7=70
+COM +$064E, to white
+COM +$0649, scroll $2A times
+COM +$0656, full screen HGR
+COM +$065C, back to text mode
+COM +$0170, is this ever called?
+COM +$08D7, DRAW SOMETHING 
+COM +$08D8, (maybe note num?)
+COM +$08E2, main entry point
+COM +$0911, always
+COM +$08F3, note is index
+COM +$08DA, Accept A = 35-100
+COM +$08DC, and rescale to
+COM +$08DE, A = 0-65
+COM +$08E7, HGR x=70 y=Y
+COM +$08E0, HGR y=49
+COM +$0952, 126 pixels wide
+COM +$0925, Scroll the area
+COM +$0927, from 70,49-195,90
+COM +$092A, down by 1 pixel
+COM +$0964, mask ORed into
+COM +$0947, x=70
+COM +$0954, copy line above
+COM +$0956, to line below
+COM +$095F, while line >= 49
+COM +$095B, line--
+COM +$0939, $04-05: this addr
+COM +$093B, $06-07: prev addr
+COM +$0937, $08: curline
+COM +$093F, *prev = *this
+COM +$094B, *this = next line
+COM +$064C, to clear whole roll
+COM +$0643, draw top line
+COM +$08FC, #00 or #FF
+COM +$0297, skip next inst
+COM +$08F8, index into PIXMASK
+COM +$08F4, index into HGR line
+COM +$0900, OR in 2 mask bytes
+COM +$0903, per note; each note
+COM +$0A28, Appears unused as
+COM +$0A29, MASKIDX len is $54.
+COM +$0980, Index into PIXMASK
+COM +$0981, based on note num
+COM +$0983, Len=$54 but only
+COM +$0984, first $42 is used
+COM +$09D4, Index into HGR byte
+COM +$09D5, based on note num
+COM +$09D7, These are in groups
+COM +$09D8, of 7 pixels
+COM +$0905, is 2 pixels wide
+COM +$0907, (white) so 2 bytes
+COM +$0986, Repeats every
+COM +$0987, 7 notes
+COM +$0966, 2 adjacent bytes
+COM +$0968, 1 DW per note
+COM +$096A, 2 white pixels
+COM +$096C, per note
+COM +$0917, turn note on (black)
+COM +$0908, hold 7 notes
+COM +$090B, (14 pixel bits)
+COM +$0919, as above, using
+COM +$091B, AND mask
+COM +$0972, mask ANDed to
+COM +$0974, turn on notes
+COM +$0978, this is just
+COM +$097A, PIXMASK EOR #$7F
+COM +$01F8, make into ascii char
+COM +$01FA, for filename
+COM +$020A, seems to convert
+COM +$020C, tempo 32-159 to
+COM +$020E, 63-0 (reversed)
+COM +$0210, reuse drawroll to
+COM +$0212, show tempo as
+COM +$0215, "note" on bottom
+COM +$0216, 2 lines of scrn
+COM +$0202, DRAWROLL white pxl
+COM +$0243, decreases tempo val
+COM +$034E, stop song on ESC
+COM +$034A, ESC
+COM +$08FE, -
+COM +$0344, critical SSC section
+COM +$036E, 127 times
+COM +$02E9, preserves A,X,Y
+COM +$0306, always
+COM +$0312, send 8 bits?
+COM +$02EB, X,Y unused
+COM +$02EF, A -> $09
+COM +$032A, just a delay?
+COM +$018C,  MARK parity?
+COM +$035D, send 90 7F 00
+COM +$035F, thru 90 01 00
+COM +$0326, reset, maybe
+COM +$0361, ie NOTE ON VEL 0
+COM +$0364, for all KEYs
+COM +$0365, on CHAN 0
+COM +$0358, why twice
+COM +$02F5, this oddly seems to
+COM +$02F7, send 1 bit at a time
+COM +$02FA, by frobbing some
+COM +$02FD, line (TX or DTR?)
+COM +$0301, COMMAND bit 3 is
+COM +$0302, underdocumented so
+COM +$0304, hard to be sure
+COM +$0274, the tick delay
+COM +$0283, note ON
+COM +$0295, vel 64
+COM +$0299, vel 0 (note off)
+COM +$028F, send byte in A
+COM +$028C, temp -- note num
+COM +$02AA, 00=off, FF=note on
+COM +$0293, note>127 is off
+COM +$029E, send byte in A
+COM +$0282, send note on or off
+COM +$0DCC, unused space
