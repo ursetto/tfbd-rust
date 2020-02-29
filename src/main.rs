@@ -72,7 +72,8 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
         let string = "xxx TODO";
         match rtype {
             _ => println!("rtype {:02X} var_len {:02X} address {:08X} count {:04X} {:?} {:?}",
-                          rtype, var_len, address, count, string, var_data),
+                          rtype, var_len, address, count, string,
+                          var_data.iter().map(|x| x & 0x7f).collect::<Vec<u8>>()),
         }
     }
     Ok(())
