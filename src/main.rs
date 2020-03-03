@@ -65,14 +65,10 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
         let rtype   = r.read_u8()?;
         assert!(rtype & 0xf0 == 0x40, "expected 4x section, got {:02X}", rtype);
         let var_len = r.read_u8()?;
+        assert_ne!(var_len, 0); // all types require a p-string
         let address = r.read_u32::<LE>()?;
         let count   = r.read_u16::<LE>()?;
-
-        assert_ne!(var_len, 0); // all types require a p-string
-        assert_eq!(var_len, r.read_u8()?);   // pascal string
-        let mut var_data = vec![0; var_len as usize];
-        r.read_exact(&mut var_data)?;
-        let var_str = apple_to_ascii(&var_data);
+        let var_str = read_pascal_string(&mut r, var_len)?;
 
         match rtype {
             0x40 => println!("LAB +${:04X}, {}         # {:04X}",
@@ -98,20 +94,7 @@ fn decode_6x(mut r: impl io::Read) -> io::Result<()> {
         let offset  = r.read_u32::<LE>()?;
         let count   = r.read_u32::<LE>()?;
         let arg     = r.read_u32::<LE>()?;
-
-        // FIXME: abstract this read of pascal string
-        // Note: this could be an Option<String> for better type-checking for
-        // types without a string. An empty string is really a p-string
-        // with a 0 length byte, whereas a missing p-string is not present.
-        let var_str =
-            if var_len != 0 {
-                assert!(var_len == r.read_u8()?);
-                let mut var_data = vec![0; var_len as usize];
-                r.read_exact(&mut var_data)?;
-                apple_to_ascii(&var_data)
-            } else {
-                "".to_string()
-            };
+        let var_str = read_pascal_string(&mut r, var_len)?;
 
         match rtype {
             0x60 => {
@@ -140,4 +123,22 @@ fn apple_to_ascii(data: &[u8]) -> String {
     // Because we strip bit 7, str::from_utf8_unchecked would also work.
     String::from_utf8(ascii_data)
         .expect("invalid utf8 in pascal string")
+}
+
+// Read a pascal string from r, expecting it to be of length len.
+fn read_pascal_string(r: &mut impl io::Read, len: u8) -> io::Result<String> {
+    // Note: this could be an Option<String> for better type-checking for
+    // types without a string. An empty string is really a p-string
+    // with a 0 length byte, whereas a missing p-string is not present.
+    
+    let s = match len {
+        0 => "".to_string(),
+        _ => {
+            assert_eq!(len, r.read_u8()?);
+            let mut var_data = vec![0; len as usize];
+            r.read_exact(&mut var_data)?;
+            apple_to_ascii(&var_data)
+        }
+    };
+    Ok(s)
 }
