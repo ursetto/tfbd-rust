@@ -18,22 +18,22 @@ fn main() {
 
 fn decode_file(filename: PathBuf) -> io::Result<()> {
     let f = File::open(&filename)?;
-    let r = io::BufReader::new(f);
+    let mut r = io::BufReader::new(f);
     // println!("Decoding filename: {}", filename.display());
-    decode(r)?;
+    decode(&mut r)?;
     Ok(())
 }
 
-fn decode(mut r: impl io::Read) -> io::Result<()> {
+fn decode(r: &mut impl io::Read) -> io::Result<()> {
     let record_count = r.read_u16::<LE>()?;
     println!("# TFBD ({} records total)", record_count);
-    decode_2x(&mut r)?;
-    decode_4x(&mut r)?;
-    decode_6x(&mut r)?;
+    decode_2x(r)?;
+    decode_4x(r)?;
+    decode_6x(r)?;
     Ok(())
 }
 
-fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
+fn decode_2x(r: &mut impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 2x section ({} records)", section_count);
     for _ in 0..section_count {
@@ -58,7 +58,7 @@ fn decode_2x(mut r: impl io::Read) -> io::Result<()> {
     Ok(())
 }
 
-fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
+fn decode_4x(r: &mut impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 4x section ({} records)", section_count);
     for _ in 0..section_count {
@@ -68,7 +68,7 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
         assert_ne!(var_len, 0); // all types require a p-string
         let address = r.read_u32::<LE>()?;
         let count   = r.read_u16::<LE>()?;
-        let var_str = read_pascal_string(&mut r, var_len)?;
+        let var_str = read_pascal_string(r, var_len)?;
 
         match rtype {
             0x40 => println!("LAB +${:04X}, {}         # {:04X}",
@@ -84,7 +84,7 @@ fn decode_4x(mut r: impl io::Read) -> io::Result<()> {
     Ok(())
 }
 
-fn decode_6x(mut r: impl io::Read) -> io::Result<()> {
+fn decode_6x(r: &mut impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 6x section ({} records)", section_count);
     for _ in 0..section_count {
@@ -94,7 +94,7 @@ fn decode_6x(mut r: impl io::Read) -> io::Result<()> {
         let offset  = r.read_u32::<LE>()?;
         let count   = r.read_u32::<LE>()?;
         let arg     = r.read_u32::<LE>()?;
-        let var_str = read_pascal_string(&mut r, var_len)?;
+        let var_str = read_pascal_string(r, var_len)?;
 
         match rtype {
             0x60 => {
