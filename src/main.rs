@@ -92,23 +92,27 @@ struct Record6x {
     arg: u32,
     label: String,        // Option<String>
 }
+impl Record6x {
+    fn read(r: &mut impl io::Read) -> io::Result<Record6x> {
+        let rtype = r.read_u8()?;
+        assert!(rtype & 0xf0 == 0x60, "expected 6x section, got {:02X}", rtype);
+        let len   = r.read_u8()?;
+
+        Ok(Self {
+            rtype, len,
+            offset: r.read_u32::<LE>()?,
+            count:  r.read_u32::<LE>()?,
+            arg:    r.read_u32::<LE>()?,
+            label:  read_pascal_string(r, len)?,
+        })        
+    }
+}
 
 fn decode_6x(r: &mut impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 6x section ({} records)", section_count);
     for _ in 0..section_count {
-        let rtype = r.read_u8()?;
-        assert!(rtype & 0xf0 == 0x60, "expected 6x section, got {:02X}", rtype);
-        let len   = r.read_u8()?;
-
-        let rec = Record6x {
-            rtype,
-            len,
-            offset: r.read_u32::<LE>()?,
-            count:  r.read_u32::<LE>()?,
-            arg:    r.read_u32::<LE>()?,
-            label:  read_pascal_string(r, len)?,
-        };
+        let rec = Record6x::read(r)?;
 
         match rec.rtype {
             0x60 => {
@@ -126,7 +130,7 @@ fn decode_6x(r: &mut impl io::Read) -> io::Result<()> {
                 println!("COM +${:04X}, {}", rec.offset, rec.label);
             },
             _ => println!("{:02X} {:02X} {:08X} {:08X} {:08X} {}",
-                          rtype, rec.len, rec.offset, rec.count, rec.arg, rec.label),
+                          rec.rtype, rec.len, rec.offset, rec.count, rec.arg, rec.label),
         }
     }
     Ok(())
