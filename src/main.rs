@@ -84,35 +84,49 @@ fn decode_4x(r: &mut impl io::Read) -> io::Result<()> {
     Ok(())
 }
 
+struct Record6x {
+    rtype: u8,
+    len: u8,
+    offset: u32,
+    count: u32,
+    arg: u32,
+    label: String,        // Option<String>
+}
+
 fn decode_6x(r: &mut impl io::Read) -> io::Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 6x section ({} records)", section_count);
     for _ in 0..section_count {
-        let rtype   = r.read_u8()?;
+        let rtype = r.read_u8()?;
         assert!(rtype & 0xf0 == 0x60, "expected 6x section, got {:02X}", rtype);
-        let var_len = r.read_u8()?;
-        let offset  = r.read_u32::<LE>()?;
-        let count   = r.read_u32::<LE>()?;
-        let arg     = r.read_u32::<LE>()?;
-        let var_str = read_pascal_string(r, var_len)?;
+        let len   = r.read_u8()?;
 
-        match rtype {
+        let rec = Record6x {
+            rtype,
+            len,
+            offset: r.read_u32::<LE>()?,
+            count:  r.read_u32::<LE>()?,
+            arg:    r.read_u32::<LE>()?,
+            label:  read_pascal_string(r, len)?,
+        };
+
+        match rec.rtype {
             0x60 => {
-                assert_eq!(var_len, 0);
+                assert_eq!(rec.len, 0);
                 println!("ORG +${:04X}, ${:04X}, L${:04X}",
-                         offset, arg, count);
+                         rec.offset, rec.arg, rec.count);
             },
             0x61 => {
-                assert_eq!(count, 1);
-                assert_eq!(var_len, 0);
-                println!("MX  +${:04X}, %{:02X}", offset, arg);
+                assert_eq!(rec.count, 1);
+                assert_eq!(rec.len, 0);
+                println!("MX  +${:04X}, %{:02X}", rec.offset, rec.arg);
             },
             0x66 => {
-                assert_eq!(count, 1);
-                println!("COM +${:04X}, {}", offset, var_str);
+                assert_eq!(rec.count, 1);
+                println!("COM +${:04X}, {}", rec.offset, rec.label);
             },
             _ => println!("{:02X} {:02X} {:08X} {:08X} {:08X} {}",
-                          rtype, var_len, offset, count, arg, var_str),
+                          rtype, rec.len, rec.offset, rec.count, rec.arg, rec.label),
         }
     }
     Ok(())
