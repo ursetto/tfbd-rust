@@ -3,20 +3,21 @@ use std::path::PathBuf;
 use std::io;
 use std::fs::File;
 use byteorder::{LE, ReadBytesExt};
+use anyhow::{ensure, Result};
 
 #[derive(StructOpt)]
 enum Cli {
     Decode { filename: PathBuf }
 }
 
-fn main() {
+fn main() -> Result<()> {
     let args = Cli::from_args();
     match args {
-        Cli::Decode { filename } => { decode_file(filename).unwrap(); }
+        Cli::Decode { filename } => { decode_file(filename) }
     }
 }
 
-fn decode_file(filename: PathBuf) -> io::Result<()> {
+fn decode_file(filename: PathBuf) -> Result<()> {
     let f = File::open(&filename)?;
     let mut r = io::BufReader::new(f);
     // println!("Decoding filename: {}", filename.display());
@@ -24,7 +25,7 @@ fn decode_file(filename: PathBuf) -> io::Result<()> {
     Ok(())
 }
 
-fn decode(r: &mut impl io::Read) -> io::Result<()> {
+fn decode(r: &mut impl io::Read) -> Result<()> {
     let record_count = r.read_u16::<LE>()?;
     println!("# TFBD ({} records total)", record_count);
     decode_2x(r)?;
@@ -33,12 +34,12 @@ fn decode(r: &mut impl io::Read) -> io::Result<()> {
     Ok(())
 }
 
-fn decode_2x(r: &mut impl io::Read) -> io::Result<()> {
+fn decode_2x(r: &mut impl io::Read) -> Result<()> {
     let section_count = r.read_u16::<LE>()?;
     println!("# 2x section ({} records)", section_count);
     for _ in 0..section_count {
         let rtype = r.read_u8()?;
-        assert!(rtype & 0xf0 == 0x20, "expected 2x section, got {:02X}", rtype);
+        ensure!(rtype & 0xf0 == 0x20, "expected 2x section, got {:02X}", rtype);
         let var_len = r.read_u8()?;
         let offset = r.read_u32::<LE>()?;
         let area_len = r.read_u16::<LE>()?;
