@@ -6,6 +6,7 @@ use byteorder::{LE, ReadBytesExt};
 use anyhow::{Context, ensure, Result};
 
 #[derive(StructOpt)]
+#[structopt(global_settings = &[structopt::clap::AppSettings::ColoredHelp])]
 enum Cli {
     Decode { filename: PathBuf }
 }
