@@ -5,6 +5,7 @@ use std::fs::File;
 use byteorder::{LE, ReadBytesExt};
 
 #[derive(StructOpt)]
+#[structopt(global_settings = &[structopt::clap::AppSettings::ColoredHelp])]
 enum Cli {
     Decode { filename: PathBuf }
 }
