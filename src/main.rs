@@ -132,7 +132,7 @@ fn read_pascal_string(r: &mut impl io::Read, len: u8) -> io::Result<String> {
     // Note: this could be an Option<String> for better type-checking for
     // types without a string. An empty string is really a p-string
     // with a 0 length byte, whereas a missing p-string is not present.
-    
+
     let s = match len {
         0 => "".to_string(),
         _ => {
