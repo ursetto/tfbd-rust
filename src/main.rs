@@ -6,6 +6,7 @@ use byteorder::{LE, ReadBytesExt};
 use anyhow::{Context, ensure, Result};
 
 #[derive(StructOpt)]
+#[structopt(global_settings = &[structopt::clap::AppSettings::ColoredHelp])]
 enum Cli {
     Decode { filename: PathBuf }
 }
@@ -105,7 +106,7 @@ impl Record6x {
             count:  r.read_u32::<LE>()?,
             arg:    r.read_u32::<LE>()?,
             label:  read_pascal_string(r, len)?,
-        })        
+        })
     }
     fn display_as_text(&self) -> Result<()> {
         match self.rtype {
@@ -127,7 +128,7 @@ impl Record6x {
                           self.rtype, self.len, self.offset, self.count, self.arg, self.label),
         }
         Ok(())
-    }    
+    }
 }
 
 fn decode_6x(r: &mut impl io::Read) -> Result<()> {
@@ -153,7 +154,7 @@ fn read_pascal_string(r: &mut impl io::Read, len: u8) -> Result<String> {
     // Note: this could be an Option<String> for better type-checking for
     // types without a string. An empty string is really a p-string
     // with a 0 length byte, whereas a missing p-string is not present.
-    
+
     let s = match len {
         0 => "".to_string(),
         _ => {
